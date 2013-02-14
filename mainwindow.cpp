@@ -186,7 +186,7 @@ void MainWindow::parseResult()
     const QByteArray rawdata = reply->readAll();
 
 
-    QStringList list = QxtJSON::parse(rawdata).toStringList();
+    QStringList list = QxtJSON::parse(QString::fromUtf8(rawdata)).toStringList();
 
     qDebug()<<list;
 
