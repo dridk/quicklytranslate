@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/google_logo.gif</file>
+        <file>icons/icon.ico</file>
+        <file>icons/icon.png</file>
+        <file>icons/accept.png</file>
+        <file>icons/arrow_refresh.png</file>
+        <file>icons/cancel.png</file>
+        <file>icons/locate.png</file>
+        <file>icons/refresh.png</file>
+        <file>icons/setting_tools.png</file>
+        <file>icons/world_go.png</file>
+        <file>icons/cut.png</file>
+        <file>icons/page_copy.png</file>
+        <file>icons/page_paste.png</file>
+        <file>icons/paypal-donate.jpg</file>
+        <file>icons/sound.png</file>
+        <file>icons/control_pause_blue.png</file>
+        <file>icons/control_play_blue.png</file>
+        <file>icons/control_start_blue.png</file>
+        <file>icons/control_stop_blue.png</file>
+        <file>icons/control_end_blue.png</file>
+        <file>icons/google_logo.png</file>
+        <file>icons/brain.png</file>
+    </qresource>
+</RCC>
