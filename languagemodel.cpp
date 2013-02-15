@@ -39,7 +39,7 @@ Language *LanguageModel::language(int row)
 
     if ( (row >= 0) && (row < mLangages.count()))
         return mLangages.at(row);
-
+	return 0;
 }
 int LanguageModel::findLangageId(const QString id)
 {

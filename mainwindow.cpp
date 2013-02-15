@@ -151,13 +151,6 @@ void MainWindow::translate()
     Language *srcLn = mLangageModel->language(ui->sourceComboBox->currentIndex());
     Language *targetLn = mLangageModel->language(ui->targetComboBox->currentIndex());
 
-    QByteArray sourceText = ui->sourceTextEdit->toPlainText().toUtf8();
-    sourceText.replace("&", "&amp;");
-    sourceText.replace("<", "&lt;");
-    sourceText.replace(">", "&gt;");
-    sourceText.replace("\n", "<br>");
-
-
     QByteArray postData;
     QString source = srcLn->id.toUtf8().toPercentEncoding();
     QString dest = targetLn->id.toUtf8().toPercentEncoding();
@@ -184,17 +177,48 @@ void MainWindow::parseResult()
 {
     QNetworkReply * reply  = qobject_cast<QNetworkReply*>(sender());
     const QByteArray rawdata = reply->readAll();
-
-
-    QStringList list = QxtJSON::parse(rawdata).toStringList();
-
-    qDebug()<<list;
-
-    QString result = list.first();
-
-
-
-ui->targetTextEdit->setText(QTextDocumentFragment::fromHtml(result).toPlainText());
+	QString result;
+	/*
+		google returns :
+		[[["Je mange. ","I eat.","",""],["vous n'avez pas.","you don't.","",""]],,"en",, ...]
+		or
+		[[["bonjour","hello","",""]],,"interjection",, ...]
+		
+		QxtJson return a shitty list:
+		QList("Je mange. ", "I eat.", "", "", "vous n'avez pas.","you don't.","","", "en", ...)
+		or
+		QList("bonjour", "hello", "", "", "interjection", ...)
+		
+		// forget it for now.
+		QStringList list = QxtJSON::parse(QString::fromUtf8(rawdata)).toStringList();
+	*/
+	int index = 0;
+	index = rawdata.indexOf('[', index);
+	index = rawdata.indexOf('[', index);
+	
+	// check what is next, a next array or the end of the group.
+	int indexOpen = rawdata.indexOf('[', index);
+	int indexClose = rawdata.indexOf(']', index);
+	
+	// if open < close, there are still things to read
+	while(indexOpen < indexClose)
+	{
+		QByteArray extract = rawdata.mid(indexOpen, indexClose - indexOpen + 1);
+		
+		// the translated string is the first quoted-string.
+		int translationStarts = extract.indexOf('"') + 1;
+		int translationEnds = extract.indexOf('"', translationStarts);
+		while(extract[ translationEnds-1 ] == '\\') // skip escaped quotes
+			translationEnds = extract.indexOf('"', translationEnds + 1);
+		
+		result += QString::fromUtf8(extract.mid(translationStarts, translationEnds - translationStarts));
+		
+		index = indexClose + 1;
+		indexOpen = rawdata.indexOf('[', index);
+		indexClose = rawdata.indexOf(']', index);
+	}
+	
+	ui->targetTextEdit->setText(QTextDocumentFragment::fromHtml(result).toPlainText());
 
     /*
     QVariantMap map = parser.parse(QString::fromUtf8(rawdata.data())).toMap();
