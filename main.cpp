@@ -31,10 +31,10 @@ int main(int argc, char **argv)
 {
 
     QApplication app(argc,argv);
-    QCoreApplication::setOrganizationName("omedsoft");
-    QCoreApplication::setOrganizationDomain("omedsoft.blogspot.com");
+    QCoreApplication::setOrganizationName("labsquare");
+    QCoreApplication::setOrganizationDomain("labsquare.org");
     QCoreApplication::setApplicationName("quicktranslate");
-    QCoreApplication::setApplicationVersion("0.5alpha");
+    QCoreApplication::setApplicationVersion("0.6alpha");
 
     QString locale = QLocale::system().name().section('_', 0, 0);
 

@@ -53,7 +53,7 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
     void load();
     Language *language(int row);
-    int findLangageId(const QString id);
+    int findLangageId(const QString& id);
 
 signals:
 

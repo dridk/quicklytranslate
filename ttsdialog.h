@@ -27,7 +27,7 @@
 #include <QDialog>
 #include <QtNetwork>
 #include <QTemporaryFile>
-//#include <phonon>
+#include <phonon/MediaObject>
 #include <QFile>
 #include "languagemodel.h"
 
@@ -60,7 +60,7 @@ private:
     Language *mLangage;
     QNetworkAccessManager * mNetManager;
     QFile mTempFile;
-    //Phonon::MediaObject *mMediaObject;
+    Phonon::MediaObject *mMediaObject;
 };
 
 #endif // TTSDIALOG_H

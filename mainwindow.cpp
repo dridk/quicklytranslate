@@ -96,10 +96,15 @@ MainWindow::MainWindow(QWidget *parent) :
     //load default langage
 
     QSettings settings;
-    QString sourceId = settings.value("source").toString();
-    QString targetId = settings.value("target").toString();
-    ui->sourceComboBox->setCurrentIndex(mLangageModel->findLangageId(sourceId));
-    ui->targetComboBox->setCurrentIndex(mLangageModel->findLangageId(targetId));
+    if (!settings.value("source").isNull())
+    {
+        QString sourceId = settings.value("source").toString();
+        QString targetId = settings.value("target").toString();
+        ui->sourceComboBox->setCurrentIndex(mLangageModel->findLangageId(sourceId));
+        ui->targetComboBox->setCurrentIndex(mLangageModel->findLangageId(targetId));
+    }
+
+
 
 }
 void MainWindow::trayActivated(QSystemTrayIcon::ActivationReason reason)
@@ -123,6 +128,8 @@ void MainWindow::trayActivated(QSystemTrayIcon::ActivationReason reason)
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete mNetManager;
+    delete mLangageModel;
 }
 void MainWindow::exit()
 {
@@ -177,48 +184,48 @@ void MainWindow::parseResult()
 {
     QNetworkReply * reply  = qobject_cast<QNetworkReply*>(sender());
     const QByteArray rawdata = reply->readAll();
-	QString result;
-	/*
-		google returns :
-		[[["Je mange. ","I eat.","",""],["vous n'avez pas.","you don't.","",""]],,"en",, ...]
-		or
-		[[["bonjour","hello","",""]],,"interjection",, ...]
-		
-		QxtJson return a shitty list:
-		QList("Je mange. ", "I eat.", "", "", "vous n'avez pas.","you don't.","","", "en", ...)
-		or
-		QList("bonjour", "hello", "", "", "interjection", ...)
-		
-		// forget it for now.
-		QStringList list = QxtJSON::parse(QString::fromUtf8(rawdata)).toStringList();
-	*/
-	int index = 0;
-	index = rawdata.indexOf('[', index);
-	index = rawdata.indexOf('[', index);
-	
-	// check what is next, a next array or the end of the group.
-	int indexOpen = rawdata.indexOf('[', index);
-	int indexClose = rawdata.indexOf(']', index);
-	
-	// if open < close, there are still things to read
-	while(indexOpen < indexClose)
-	{
-		QByteArray extract = rawdata.mid(indexOpen, indexClose - indexOpen + 1);
-		
-		// the translated string is the first quoted-string.
-		int translationStarts = extract.indexOf('"') + 1;
-		int translationEnds = extract.indexOf('"', translationStarts);
-		while(extract[ translationEnds-1 ] == '\\') // skip escaped quotes
-			translationEnds = extract.indexOf('"', translationEnds + 1);
-		
-		result += QString::fromUtf8(extract.mid(translationStarts, translationEnds - translationStarts));
-		
-		index = indexClose + 1;
-		indexOpen = rawdata.indexOf('[', index);
-		indexClose = rawdata.indexOf(']', index);
-	}
-	
-	ui->targetTextEdit->setText(QTextDocumentFragment::fromHtml(result).toPlainText());
+    QString result;
+    /*
+        google returns :
+        [[["Je mange. ","I eat.","",""],["vous n'avez pas.","you don't.","",""]],,"en",, ...]
+        or
+        [[["bonjour","hello","",""]],,"interjection",, ...]
+
+        QxtJson return a shitty list:
+        QList("Je mange. ", "I eat.", "", "", "vous n'avez pas.","you don't.","","", "en", ...)
+        or
+        QList("bonjour", "hello", "", "", "interjection", ...)
+
+        // forget it for now.
+        QStringList list = QxtJSON::parse(QString::fromUtf8(rawdata)).toStringList();
+    */
+    int index = 0;
+    index = rawdata.indexOf('[', index);
+    index = rawdata.indexOf('[', index);
+
+    // check what is next, a next array or the end of the group.
+    int indexOpen = rawdata.indexOf('[', index);
+    int indexClose = rawdata.indexOf(']', index);
+
+    // if open < close, there are still things to read
+    while(indexOpen < indexClose)
+    {
+        QByteArray extract = rawdata.mid(indexOpen, indexClose - indexOpen + 1);
+
+        // the translated string is the first quoted-string.
+        int translationStarts = extract.indexOf('"') + 1;
+        int translationEnds = extract.indexOf('"', translationStarts);
+        while(extract[ translationEnds-1 ] == '\\') // skip escaped quotes
+            translationEnds = extract.indexOf('"', translationEnds + 1);
+
+        result += QString::fromUtf8(extract.mid(translationStarts, translationEnds - translationStarts));
+
+        index = indexClose + 1;
+        indexOpen = rawdata.indexOf('[', index);
+        indexClose = rawdata.indexOf(']', index);
+    }
+
+    ui->targetTextEdit->setText(QTextDocumentFragment::fromHtml(result).toPlainText());
 
     /*
     QVariantMap map = parser.parse(QString::fromUtf8(rawdata.data())).toMap();
@@ -246,7 +253,7 @@ void MainWindow::swapLangages()
 void MainWindow::textToSpeak()
 {
 
-    /*  Language *srcLn = mLangageModel->language(ui->sourceComboBox->currentIndex());
+      Language *srcLn = mLangageModel->language(ui->sourceComboBox->currentIndex());
     Language *targetLn = mLangageModel->language(ui->targetComboBox->currentIndex());
 
     QToolButton * button = qobject_cast<QToolButton*>(sender());
@@ -266,16 +273,16 @@ void MainWindow::textToSpeak()
         return;
 
     dialog->exec();
-*/
+
 }
 
 void MainWindow::showTextTTS()
 {
-    /*
+
     TTSDialog * dialog = new TTSDialog(mLangageModel->language(mLangageModel->findLangageId("en")),"welcome");
     dialog->exec();
 
-    */
+
 }
 
 void MainWindow::showPreferences()

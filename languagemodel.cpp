@@ -41,7 +41,7 @@ Language *LanguageModel::language(int row)
         return mLangages.at(row);
 	return 0;
 }
-int LanguageModel::findLangageId(const QString id)
+int LanguageModel::findLangageId(const QString& id)
 {
     int row = 0;
     foreach ( Language*  langage, mLangages)

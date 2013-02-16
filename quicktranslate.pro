@@ -1,4 +1,4 @@
-QT += network script
+QT += network script phonon
 
 win32:RC_FILE = myapp.rc
 mac:ICONS = resources/icon.png
@@ -10,7 +10,7 @@ SOURCES += \
     textedit.cpp \
     languagemodel.cpp \
     aboutdialog.cpp \
-   # ttsdialog.cpp \
+    ttsdialog.cpp \
     qxtjson/qxtjson.cpp \
 
 HEADERS += \
@@ -19,14 +19,14 @@ HEADERS += \
     textedit.h \
     languagemodel.h \
     aboutdialog.h \
-   # ttsdialog.h \
+   ttsdialog.h \
     qxtjson/qxtjson.h \
 
 FORMS += \
     mainwindow.ui \
     preferencedialog.ui \
     aboutdialog.ui \
-   # ttsdialog.ui
+    ttsdialog.ui
 
 RESOURCES += \
     resources/resources.qrc \
